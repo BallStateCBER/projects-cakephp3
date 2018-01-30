@@ -27,6 +27,10 @@ use Cake\Event\Event;
  */
 class AppController extends Controller
 {
+    public $components = [
+        'DataCenter.Flash',
+        'DataCenter.TagManager'
+    ];
 
     /**
      * Initialization hook method.
@@ -43,6 +47,45 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('DataCenter.Flash');
+        $this->loadComponent(
+            'Auth',
+            [
+                'loginAction' => [
+                    'prefix' => false,
+                    'controller' => 'Users',
+                    'action' => 'login'
+                ],
+                'logoutRedirect' => [
+                    'prefix' => false,
+                    'controller' => 'Releases',
+                    'action' => 'index'
+                ],
+                'authenticate' => [
+                    'Form' => [
+                        'fields' => [
+                            'username' => 'email',
+                            'password' => 'password'
+                        ],
+                        'passwordHasher' => [
+                            'className' => 'Fallback',
+                            'hashers' => [
+                                'Default',
+                                'Weak' => ['hashType' => 'sha1']
+                            ]
+                        ]
+                    ]
+                ],
+                'authError' => 'You are not authorized to view this page',
+                'authorize' => 'Controller'
+            ]
+        );
+        if ($this->request->getParam('action') != 'autoComplete') {
+            if ($this->request->getParam('action') != 'autoComplete') {
+                $this->set([
+                    'authUser' => $this->Auth->user('id') ? $this->Users->get($this->Auth->user('id')): null
+                ]);
+            }
+        }
 
         /*
          * Enable the following components for recommended CakePHP security settings.

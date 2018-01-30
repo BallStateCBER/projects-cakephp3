@@ -12,6 +12,47 @@ use App\Controller\AppController;
  */
 class UsersController extends AppController
 {
+    /**
+     * login method
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function login()
+    {
+        $this->set('titleForLayout', 'Log In');
+        if ($this->request->is('post')) {
+            $user = $this->Auth->identify();
+            if ($user) {
+                $this->Auth->setUser($user);
+
+                // do they have an old sha1 password?
+                if ($this->Auth->authenticationProvider()->needsPasswordRehash()) {
+                    $user = $this->Users->get($this->Auth->user('id'));
+                    $user->password = $this->request->getData('password');
+                    $this->Users->save($user);
+                }
+
+                // Remember login information
+                if ($this->request->getData('remember_me')) {
+                    $this->Cookie->configKey('User', [
+                        'expires' => '+1 year',
+                        'httpOnly' => true
+                    ]);
+                    $this->Cookie->write('User', [
+                        'email' => $this->request->getData('email'),
+                        'password' => $this->request->getData('password')
+                    ]);
+                }
+
+                return $this->redirect($this->Auth->redirectUrl());
+            }
+            if (!$user) {
+                $this->Flash->error(__('We could not log you in. Please check your email & password.'));
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Index method
