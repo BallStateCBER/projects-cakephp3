@@ -491,27 +491,14 @@ table.commentaries {
 		margin-bottom: 20px;
 	}
 }
-ul.commentary_years {
-	font-size: 15px;
-	margin: 0 0 20px 0;
-	padding: 0;
-
-	li {
-		display: inline;
-		height: 20px;
-		line-height: 20px;
-		list-style-type: none;
-		margin-right: 10px;
-
-		&.selected {
-			font-size: 17px;
-			font-weight: bold;
-			text-shadow: 1px 1px 1px #AFAFAF;
-		}
-	}
+ul.tags {
+    li {
+        display: inline;
+        :after {
+            content: '\2022';
+        }
+    }
 }
-
-
 
 /* PROFILE BOX */
 .profile_box {

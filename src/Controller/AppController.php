@@ -101,12 +101,14 @@ class AppController extends Controller
             ]);
         }
 
-        /*
-         * Enable the following components for recommended CakePHP security settings.
-         * see https://book.cakephp.org/3.0/en/controllers/components/security.html
-         */
-        //$this->loadComponent('Security');
-        //$this->loadComponent('Csrf');
+        $this->loadModel('Authors');
+        $this->loadModel('AuthorsReleases');
+        $this->loadModel('Graphics');
+        $this->loadModel('Partners');
+        $this->loadModel('Releases');
+        $this->loadModel('ReleasesTags');
+        $this->loadModel('Tags');
+        $this->loadModel('Users');
     }
 
     /**
@@ -129,6 +131,49 @@ class AppController extends Controller
                 $this->response = $this->response->withExpiredCookie('CookieAuth');
             }
         }
+        
+        $tags = $this->Tags->find()
+            ->select(['id', 'name', 'slug'])
+            ->contain(['Releases'])
+            ->order(['name' => 'ASC'])
+            ->toArray();
+        $tagsSimple = [];
+        foreach ($tags as $result) {
+            if (!empty($result['releases'])) {
+                $tagsSimple[] = $result;
+            }
+        }
+
+        $releases = $this->Releases->find()
+            ->select('released')
+            ->order(['released' => 'DESC'])
+            ->toArray();
+        $years = [];
+        foreach ($releases as $release) {
+            $date = $release->released;
+            $year = date('Y', strtotime($date));
+            if (!in_array($year, $years)) {
+                $years[] = $year;
+            }
+        }
+
+        $partners = $this->Partners->find()
+            ->contain(['Releases'])
+            ->order(['name' => 'ASC'])
+            ->toArray();
+        foreach ($partners as $k => $partner) {
+            if (empty($partner['Release'])) {
+                unset($partners[$k]);
+            }
+        }
+
+        $this->set([
+            'sidebarVars' => [
+                'partners' => $partners,
+                'tags' => $tagsSimple,
+                'years' => $years
+            ]
+        ]);
     }
 
     /**
