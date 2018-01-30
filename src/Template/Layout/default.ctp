@@ -8,9 +8,9 @@ $this->Html->script('script', ['block' => 'scriptBottom']);
 <?php $this->start('subsite_title'); ?>
     <h1 id="subsite_title" class="max_width">
         <a href="/">
-            <img src="/img/Commentary.jpg" alt="Weekly Commentary Banner with Dr. Hicks holding a microphone" />
+            <img src="/img/Projects.jpg" alt="Projects and Publications" />
             <span class="sr-only">
-                Weekly Commentary by Michael J. Hicks, Ph.D. Director of the Center for Business and Economic Research at Ball State University. George and Frances Ball Distinguished Professor of Economics.
+                Projects and Publications is our archive of CBER reports ranging from this year through 2008 and a project search by keyword.
             </span>
         </a>
     </h1>
