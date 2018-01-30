@@ -73,12 +73,19 @@ class AppController extends Controller
                                 'Weak' => ['hashType' => 'sha1']
                             ]
                         ]
+                    ],
+                    'Cookie' => [
+                        'fields' => [
+                            'username' => 'email',
+                            'password' => 'password'
+                        ]
                     ]
                 ],
                 'authError' => 'You are not authorized to view this page',
                 'authorize' => 'Controller'
             ]
         );
+
         if ($this->request->getParam('action') != 'autoComplete') {
             if ($this->request->getParam('action') != 'autoComplete') {
                 $this->set([
@@ -87,12 +94,41 @@ class AppController extends Controller
             }
         }
 
+        if (php_sapi_name() != 'cli') {
+            $this->loadComponent('Security', [
+                'blackHoleCallback' => 'forceSSL',
+                'validatePost' => false
+            ]);
+        }
+
         /*
          * Enable the following components for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
         //$this->loadComponent('Csrf');
+    }
+
+    /**
+     * beforeFilter event
+     *
+     * @param Event $event Event object
+     * @return void
+     */
+    public function beforeFilter(Event $event)
+    {
+        if (php_sapi_name() != 'cli') {
+            $this->Security->requireSecure();
+        }
+
+        if (!$this->Auth->user() && $this->request->getCookie('CookieAuth')) {
+            $user = $this->Auth->identify();
+            if ($user) {
+                $this->Auth->setUser($user);
+            } else {
+                $this->response = $this->response->withExpiredCookie('CookieAuth');
+            }
+        }
     }
 
     /**
