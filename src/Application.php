@@ -1,21 +1,23 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link      https://cakephp.org CakePHP(tm) Project
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link      http://cakephp.org CakePHP(tm) Project
  * @since     3.3.0
- * @license   https://opensource.org/licenses/mit-license.php MIT License
+ * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace App;
 
+use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
+use Cake\Http\Middleware\EncryptedCookieMiddleware;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 
@@ -28,14 +30,14 @@ use Cake\Routing\Middleware\RoutingMiddleware;
 class Application extends BaseApplication
 {
     /**
-     * Setup the middleware queue your application will use.
+     * Setup the middleware your application will use.
      *
-     * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to setup.
-     * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
+     * @param \Cake\Http\MiddlewareQueue $middleware The middleware queue to setup.
+     * @return \Cake\Http\MiddlewareQueue The updated middleware.
      */
-    public function middleware($middlewareQueue)
+    public function middleware($middleware)
     {
-        $middlewareQueue
+        $middleware
             // Catch any exceptions in the lower layers,
             // and make an error page/response
             ->add(ErrorHandlerMiddleware::class)
@@ -44,8 +46,13 @@ class Application extends BaseApplication
             ->add(AssetMiddleware::class)
 
             // Apply routing
-            ->add(RoutingMiddleware::class);
+            ->add(RoutingMiddleware::class)
 
-        return $middlewareQueue;
+            ->add(new EncryptedCookieMiddleware(
+                ['CookieAuth'],
+                Configure::read('cookie_key')
+            ));
+
+        return $middleware;
     }
 }
