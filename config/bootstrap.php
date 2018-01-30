@@ -152,7 +152,8 @@ ConnectionManager::setConfig(Configure::consume('Datasources'));
 Email::setConfigTransport(Configure::consume('EmailTransport'));
 Email::setConfig(Configure::consume('Email'));
 Log::setConfig(Configure::consume('Log'));
-Security::salt(Configure::consume('Security.salt'));
+Security::setSalt(Configure::consume('Security.salt'));
+Configure::write('admin_email', env('ADMIN_EMAIL'));
 
 /*
  * The default crypto extension in 3.0 is OpenSSL.

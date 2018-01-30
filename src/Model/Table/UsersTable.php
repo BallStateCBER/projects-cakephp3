@@ -1,23 +1,15 @@
 <?php
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
+use Cake\Core\Configure;
+use Cake\Mailer\Email;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Routing\Router;
 use Cake\Validation\Validator;
 
 /**
  * Users Model
- *
- * @method \App\Model\Entity\User get($primaryKey, $options = [])
- * @method \App\Model\Entity\User newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\User[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\User|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\User patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\User[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\User findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class UsersTable extends Table
 {
@@ -83,5 +75,70 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['email']));
 
         return $rules;
+    }
+
+    /**
+     * get a user ID from their email address
+     *
+     * @param string $email of user
+     * @return bool
+     */
+    public function getIdFromEmail($email)
+    {
+        $result = $this->find()
+            ->select(['id'])
+            ->where(['email' => $email])
+            ->first();
+        if ($result) {
+            return $result->id;
+        }
+
+        return false;
+    }
+
+    /**
+     * get the security hash for the password reset
+     *
+     * @param int $userId of user
+     * @param string $email to send to
+     * @return string
+     */
+    public function getResetPasswordHash($userId, $email)
+    {
+        $salt = Configure::read('password_reset_salt');
+        $month = date('my');
+
+        return md5($userId . $email . $salt . $month);
+    }
+
+    /**
+     * send the user their password reset email
+     *
+     * @param int $userId of user
+     * @param string $email to send to
+     * @return array
+     */
+    public function sendPasswordResetEmail($userId, $email)
+    {
+        $resetPasswordHash = $this->getResetPasswordHash($userId, $email);
+        $resetEmail = new Email('default');
+        $resetUrl = Router::url([
+            'controller' => 'users',
+            'action' => 'resetPassword',
+            $userId,
+            $resetPasswordHash
+        ], true);
+        $resetEmail
+            ->setTo($email)
+            ->setSubject('Muncie Events: Reset Password')
+            ->setTemplate('forgot_password')
+            ->setEmailFormat('both')
+            ->setHelpers(['Html', 'Text'])
+            ->setViewVars(compact(
+                'email',
+                'resetUrl'
+            ));
+
+        return $resetEmail->send();
     }
 }

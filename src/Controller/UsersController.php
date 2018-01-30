@@ -1,17 +1,30 @@
 <?php
 namespace App\Controller;
 
-use App\Controller\AppController;
+use Cake\Core\Configure;
 
 /**
  * Users Controller
- *
- * @property \App\Model\Table\UsersTable $Users
- *
- * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class UsersController extends AppController
 {
+    /**
+     * Initialization hook method.
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        $this->Auth->allow([
+            'forgotPassword',
+            'register',
+            'resetPassword',
+            'view',
+            'logout'
+        ]);
+    }
+
     /**
      * login method
      *
@@ -49,6 +62,41 @@ class UsersController extends AppController
             }
             if (!$user) {
                 $this->Flash->error(__('We could not log you in. Please check your email & password.'));
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * for when the user forgets their password
+     *
+     * @return null
+     */
+    public function forgotPassword()
+    {
+        $this->set([
+            'titleForLayout' => 'Forgot Password'
+        ]);
+
+        if ($this->request->is('post')) {
+            $adminEmail = Configure::read('admin_email');
+            $email = strtolower(trim($this->request->getData('email')));
+            $userId = $this->Users->getIdFromEmail($email);
+            if ($userId) {
+                if ($this->Users->sendPasswordResetEmail($userId, $email)) {
+                    $this->Flash->success('Message sent. You should be shortly receiving an email with a link to reset your password.');
+
+                    return null;
+                }
+                $this->Flash->error("Whoops. There was an error sending your password-resetting email out. Please try again, and if it continues to not work, email $adminEmail for more assistance.");
+            }
+            if (!$userId) {
+                $this->Flash->error("We couldn't find an account registered with the email address $email.");
+            }
+
+            if (!isset($email)) {
+                $this->Flash->error('Please enter the email address you registered with to have your password reset.');
             }
         }
 
