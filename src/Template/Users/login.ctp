@@ -16,7 +16,7 @@
 </div>
 
 <div class="col-lg-6">
-    <?= $this->Form->input('remember_me', [
+    <?= $this->Form->input('Log me in automatically', [
             'type' => 'checkbox',
             'label' => [
                 'text' => ' Remember me',
