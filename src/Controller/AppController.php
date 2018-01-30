@@ -47,7 +47,6 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('DataCenter.Flash');
-        $this->loadComponent('Cookie');
         $this->loadComponent(
             'Auth',
             [
