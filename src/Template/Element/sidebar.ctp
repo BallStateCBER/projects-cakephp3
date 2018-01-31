@@ -61,8 +61,11 @@
         'url' => ['controller' => 'releases', 'action' => 'search']
     ]
 ); ?>
-<?php echo $this->Form->input('q', ['label' => false]); ?>
-<?php echo $this->Form->submit('Search'); ?>
+<label for="q" class="sr-only">
+    Search bar input
+</label>
+<?php echo $this->Form->input('q', ['class' => 'form-control', 'label' => false]); ?>
+<?php echo $this->Form->submit('Search', ['class' => 'btn btn-default']); ?>
 <?= $this->Form->end() ?>
 
 <?php if ($authUser): ?>

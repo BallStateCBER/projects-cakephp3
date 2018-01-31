@@ -162,7 +162,7 @@ class AppController extends Controller
             ->order(['name' => 'ASC'])
             ->toArray();
         foreach ($partners as $k => $partner) {
-            if (empty($partner['Release'])) {
+            if (empty($partner['releases'])) {
                 unset($partners[$k]);
             }
         }
