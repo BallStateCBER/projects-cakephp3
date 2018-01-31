@@ -51,6 +51,24 @@ Router::scope('/', function (RouteBuilder $routes) {
      */
     $routes->connect('/', ['controller' => 'Releases', 'action' => 'index']);
 
+    Router::connect(
+        '/partner/:id/:slug',
+        ['controller' => 'partners', 'action' => 'view'],
+        ['id' => '[0-9]+', 'pass' => ['id', 'slug']]
+    );
+
+    Router::connect(
+        '/topic/:id/:slug',
+        ['controller' => 'tags', 'action' => 'view'],
+        ['id' => '[0-9]+', 'pass' => ['id', 'slug']]
+    );
+
+    Router::connect(
+        '/year/:year',
+        ['controller' => 'releases', 'action' => 'year'],
+        ['pass' => ['year']]
+    );
+
     /**
      * Connect catchall routes for all controllers.
      *
