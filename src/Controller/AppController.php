@@ -86,6 +86,9 @@ class AppController extends Controller
             ]
         );
 
+        // allow everything
+        $this->Auth->allow();
+
         if ($this->request->getParam('action') != 'autoComplete') {
             if ($this->request->getParam('action') != 'autoComplete') {
                 $this->set([
