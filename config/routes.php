@@ -53,19 +53,25 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     Router::connect(
         '/partner/:id/:slug',
-        ['controller' => 'partners', 'action' => 'view'],
+        ['controller' => 'Partners', 'action' => 'view'],
         ['id' => '[0-9]+', 'pass' => ['id', 'slug']]
     );
 
     Router::connect(
+        "/:id/:slug",
+        ['controller' => 'Releases', 'action' => 'view'],
+        ['id' => '[0-9]+', 'pass' => ['id', 'slug'], 'slug' => '[-_a-z0-9]+']
+    );
+
+    Router::connect(
         '/topic/:id/:slug',
-        ['controller' => 'tags', 'action' => 'view'],
+        ['controller' => 'Tags', 'action' => 'view'],
         ['id' => '[0-9]+', 'pass' => ['id', 'slug']]
     );
 
     Router::connect(
         '/year/:year',
-        ['controller' => 'releases', 'action' => 'year'],
+        ['controller' => 'Releases', 'action' => 'year'],
         ['pass' => ['year']]
     );
 
