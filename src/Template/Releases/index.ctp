@@ -1,7 +1,7 @@
 <div class="paging">
-	<?php if ($this->Paginator->hasPrev()) echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled')); ?>
-	<?php echo $this->Paginator->numbers(array('separator' => '')); ?>
-	<?php if ($this->Paginator->hasNext()) echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled')); ?>
+	<?php if ($this->Paginator->hasPrev()) echo $this->Paginator->prev('< ' . __('previous'), [], null, ['class' => 'prev disabled']); ?>
+	<?php echo $this->Paginator->numbers(['separator' => '']); ?>
+	<?php if ($this->Paginator->hasNext()) echo $this->Paginator->next(__('next') . ' >', [], null, ['class' => 'next disabled']); ?>
 </div>
 
 <div class="releases">
@@ -11,8 +11,8 @@
 </div>
 
 <div class="paging">
-	<?php if ($this->Paginator->hasPrev()) echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled')); ?>
-	<?php echo $this->Paginator->numbers(array('separator' => '')); ?>
-	<?php if ($this->Paginator->hasNext()) echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled')); ?>
+	<?php if ($this->Paginator->hasPrev()) echo $this->Paginator->prev('< ' . __('previous'), [], null, ['class' => 'prev disabled']); ?>
+	<?php echo $this->Paginator->numbers(['separator' => '']); ?>
+	<?php if ($this->Paginator->hasNext()) echo $this->Paginator->next(__('next') . ' >', [], null, ['class' => 'next disabled']); ?>
 </div>
 

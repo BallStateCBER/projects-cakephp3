@@ -1,30 +1,29 @@
 <div class="release">
 	<h1>
-		<?php echo $this->Html->link($release['Release']['title'], array(
-			'controller' => 'releases', 'action' => 'view', 'id' => $release['Release']['id'], 'slug' => $release['Release']['slug']
-		)); ?>
+		<?= $this->Html->link($release->title, [
+			'controller' => 'releases', 'action' => 'view', 'id' => $release->id, 'slug' => $release->slug
+		]); ?>
 	</h1>
 
 	<p class="partner">
-		<?php echo $this->Html->link($release['Partner']['name'], array(
-			'controller' => 'partners', 'action' => 'view', 'id' => $release['Partner']['id'], 'slug' => $release['Partner']['slug']
-		)); ?>
+		<?= $this->Html->link($release->partner['name'], [
+			'controller' => 'partners', 'action' => 'view', 'id' => $release->partner['id'], 'slug' => $release->partner['slug']
+		]); ?>
 	</p>
 
-	<?php if ($this->Session->read('Auth.User')): ?>
+	<?php if ($this->request->getSession()->read('Auth.User')): ?>
 		<span class="controls">
-			<?php echo $this->Html->link(
+			<?= $this->Html->link(
 				$this->Html->image('/data_center/img/icons/pencil.png').'Edit',
-				array('controller' => 'releases', 'action' => 'edit', $release['Release']['id']),
-				array('escape' => false)
+				['controller' => 'releases', 'action' => 'edit', $release->id],
+				['escape' => false]
 			); ?>
-			<?php echo $this->Form->postLink(
+			<?= $this->Form->postLink(
 				$this->Html->image('/data_center/img/icons/cross.png').'Delete',
-				array('controller' => 'releases', 'action' => 'delete', $release['Release']['id']),
-				array('escape' => false),
+				['controller' => 'releases', 'action' => 'delete', $release->id],
+				['escape' => false],
 				'Are you sure that you want to delete this release?'
 			); ?>
-			<?php //echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $release['Release']['id']), null, __('Are you sure you want to delete # %s?', $release['Release']['id'])); ?>
 		</span>
 	<?php endif; ?>
 
@@ -32,13 +31,13 @@
 		<tbody>
 			<tr>
 				<td class="description_col">
-					<?php echo $release['Release']['description']; ?>
+					<?= $release->description; ?>
 
-					<?php if (! empty($release['Tag'])):?>
+					<?php if (! empty($release->tags)):?>
 						<p class="tags">
 							Tags:
 							<?php
-								$tag_links = array();
+								$tag_links = [];
 								foreach ($release['Tag'] as $tag) {
 									$tag_links[] = $this->Html->link(
 										$tag['name'],
@@ -52,9 +51,9 @@
 
 					<?php if (! empty($release['Author'])):?>
 						<p class="authors">
-							<?php echo __n('Author', 'Authors', count($release['Author'])); ?>:
+							<?= __n('Author', 'Authors', count($release['Author'])); ?>:
 							<?php
-								$author_links = array();
+								$author_links = [];
 								foreach ($release['Author'] as $author) {
 									$author_links[] = $this->Html->link(
 										$author['name'],
@@ -71,9 +70,9 @@
 					<?php endif; ?>
 
 				</td>
-				<td class="graphics_col <?php echo (count($release['Graphic']) > 1) ? 'graphics_col_double' : 'graphics_col_single'; ?>">
+				<td class="graphics_col <?= (count($release['Graphic']) > 1) ? 'graphics_col_double' : 'graphics_col_single'; ?>">
 					<p class="date">
-						Published <?php echo date('F j, Y', strtotime($release['Release']['released'])); ?>
+						Published <?= date('F j, Y', strtotime($release->released)); ?>
 					</p>
 
 					<?php if (! empty($release['Graphic'])): ?>
