@@ -33,28 +33,28 @@
 				<td class="description_col">
 					<?= $release->description; ?>
 
-					<?php if (! empty($release->tags)):?>
+					<?php if (!empty($release->tags)):?>
 						<p class="tags">
 							Tags:
 							<?php
-								$tag_links = [];
-								foreach ($release['Tag'] as $tag) {
-									$tag_links[] = $this->Html->link(
+								$tagLinks = [];
+								foreach ($release->tags as $tag) {
+									$tagLinks[] = $this->Html->link(
 										$tag['name'],
 										array('controller' => 'tags', 'action' => 'view', 'id' => $tag['id'], 'slug' => $tag['slug'])
 									);
 								}
-								echo implode(', ', $tag_links);
+								echo implode(', ', $tagLinks);
 							?>
 						</p>
 					<?php endif; ?>
 
-					<?php if (! empty($release['Author'])):?>
+					<?php if (!empty($release->authors)):?>
 						<p class="authors">
-							<?= __n('Author', 'Authors', count($release['Author'])); ?>:
+							<?= __n('Author', 'Authors', count($release->authors)); ?>:
 							<?php
 								$authorLinks = [];
-								foreach ($release['Author'] as $author) {
+								foreach ($release->authors as $author) {
 									$authorLinks[] = $this->Html->link(
 										$author['name'],
 										array(
