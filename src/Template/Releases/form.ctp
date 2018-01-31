@@ -4,36 +4,43 @@
 
 <?php
 	// Load validation library
-	$this->Html->script('jquery.validationEngine', array('inline' => false));
-	$this->Html->script('jquery.validationEngine-en', array('inline' => false));
-	$this->Html->css('validationEngine.jquery', null, array('inline' => false));
+	$this->Html->script('jquery.validationEngine', ['inline' => false]);
+	$this->Html->script('jquery.validationEngine-en', ['inline' => false]);
+	$this->Html->css('validationEngine.jquery', null, ['inline' => false]);
 
-	$valid_extensions = array();
-	foreach ($report_filetypes as $ext) {
-		$valid_extensions[] = '*.'.$ext;
+	$validExtensions = [];
+	foreach ($reportFiletypes as $ext) {
+		$validExtensions[] = '*.'.$ext;
 	}
-	$this->Html->script('admin', array('inline' => false));
-	$this->Js->buffer("releaseForm.init();");
+	$this->Html->script('admin', ['inline' => false]);
+?>
 
+<script>
+    releaseForm.init();
+</script>
+
+<?php
     // Determine file upload limit
-    $max_upload = (int)(ini_get('upload_max_filesize'));
-    $max_post = (int)(ini_get('post_max_size'));
-    $memory_limit = (int)(ini_get('memory_limit'));
-    $upload_mb = min($max_upload, $max_post, $memory_limit);
+    $maxUpload = (int) (ini_get('upload_max_filesize'));
+    $maxPost = (int) (ini_get('post_max_size'));
+    $memoryLimit = (int) (ini_get('memory_limit'));
+    $uploadMb = min($maxUpload, $maxPost, $memoryLimit);
 
 	// Load uploadify library
-	$this->Html->script('/uploadify/jquery.uploadify.min.js', array('inline' => false));
-	$this->Html->css('uploadify.css', null, array('inline' => false));
-	$this->Js->buffer("
-		releaseForm.setupUploadify({
-			valid_extensions: '".implode('; ', $valid_extensions)."',
-			time: ".time().",
-			token: '".md5(Configure::read('upload_token').time())."',
-			fileSizeLimit: '{$upload_mb}MB'
-		});
-	");
+	$this->Html->script('/uploadify/jquery.uploadify.min.js', ['inline' => false]);
+	$this->Html->css('uploadify.css', null, ['inline' => false]);
+?>
 
+<script>
+    releaseForm.setupUploadify({
+        valid_extensions: '<?= ".implode('; ', $validExtensions)." ?>',
+        time: <?= ".time()." ?>,
+        token: '<?= ".md5(Configure::read('upload_token').time())." ?>',
+        fileSizeLimit: '{<?= $uploadMb ?>}MB'
+    });
+</script>
 
+<?php
 	/* $i is the next key to be applied to a new input row.
 	 * It begins at zero (or the highest key of data['Graphic'] + 1)
 	 * and needs to be provided to jQuery. */
@@ -42,67 +49,68 @@
 	} else {
 		$i = 0;
 	}
-	$this->Js->buffer("$('body').data('graphics_iterator', $i);");
 ?>
+<script>
+    $('body').data('graphics_iterator', <?= $i ?>);
+</script>
 
 <h1 class="page_title">
-	<?php echo $title_for_layout; ?>
+	<?= $titleForLayout; ?>
 </h1>
-<?php
-	echo $this->Form->create(
+<?= $this->Form->create(
 		'Release',
-		array(
+		[
 			'id' => 'ReleaseForm',
 			'type' => 'file'
-		)
+		]
 	);
 	if ($mode == 'edit') {
-		echo $this->Form->input('id', array('type' => 'hidden', 'value' => $release_id));
+		echo $this->Form->input('id', ['type' => 'hidden', 'value' => $release_id]);
 	}
-	echo $this->Form->input('title', array('class' => 'validate[required]'));
-	echo $this->Form->input('released', array(
+	echo $this->Form->input('title', ['class' => 'validate[required]']);
+	echo $this->Form->input('released', [
 		'type' => 'date',
 		'dateFormat' => 'MDY',
 		'label' => 'Date Published',
 		'minYear' => 2001,
 		'maxYear' => date('Y')
-	));
+	]);
 ?>
 
 <?php if (empty($partners)): ?>
-	<?php echo $this->Form->input('new_partner', array(
+	<?= $this->Form->input('new_partner', [
 		'type' => 'text',
 		'label' => 'Client, Partner, or Sponsor',
 		'class' => 'validate[required]'
-	)); ?>
+	]); ?>
 <?php else: ?>
 	<div id="choose_partner">
-		<?php echo $this->Form->input('partner_id', array(
+		<?= $this->Form->input('partner_id', [
 			'options' => $partners,
 			'label' => 'Client, Partner, or Sponsor',
 			'empty' => true,
 			'after' => ' <a href="#" id="add_partner_button">Add new</a>',
 			'class' => 'partner validate[funcCall[checkPartner]]'
-		)); ?>
+		]); ?>
 	</div>
 	<div id="add_partner" style="display: none;">
-		<?php echo $this->Form->input('new_partner', array(
+		<?= $this->Form->input('new_partner', [
 			'type' => 'text',
 			'label' => 'Client, Partner, or Sponsor',
 			'after' => ' <a href="#" id="choose_partner_button">Choose from list</a>',
 			'class' => 'partner validate[funcCall[checkPartner]]'
-		)); ?>
+		]); ?>
 	</div>
 <?php endif; ?>
 
-<?php echo $this->Form->input('author', array(
+<?= $this->Form->input('author', [
 	'after' => ' <a href="#" id="add_author_toggler">Add new</a>',
-	'div' => array(
+	'div' => [
 		'id' => 'author_select'
-	),
+	],
 	'empty' => true,
 	'label' => 'Author(s)'
-)); ?>
+]); ?>
 <div id="new_author" style="display: none;">
 	<input type="text" placeholder="Author's name" />
 	<a id="add_author_button" href="#">
@@ -117,8 +125,8 @@
 	<?php if (isset($this->request->data['Author'])): ?>
 		<?php foreach ($this->request->data['Author'] as $author): ?>
 			<li>
-				<?php echo $author['name']; ?>
-				<input type="hidden" name="data[Author][Author][]" value="<?php echo $author['id']; ?>" />
+				<?= $author['name']; ?>
+				<input type="hidden" name="data[Author][Author][]" value="<?= $author['id']; ?>" />
 				<button>
 					X
 				</button>
@@ -127,7 +135,7 @@
 	<?php endif; ?>
 </ul>
 
-<?php echo $this->Form->input('description', array('class' => 'validate[required]')); ?>
+<?= $this->Form->input('description', ['class' => 'validate[required]']); ?>
 
 <fieldset class="reports">
 	<legend>
@@ -138,9 +146,9 @@
 	</legend>
 	<ul class="footnote" style="display: none;" id="footnote_upload_reports">
 		<li>Click on <strong>Select Files</strong> above to upload one or more documents.</li>
-		<li>Files must have one of the following extensions: <?php echo $this->Text->toList($report_filetypes, 'or'); ?>.</li>
-		<?php if ($upload_mb): ?>
-			<li>Files larger than <?php echo $upload_mb; ?>MB will need to be uploaded via FTP client.</li>
+		<li>Files must have one of the following extensions: <?= $this->Text->toList($reportFiletypes, 'or'); ?>.</li>
+		<?php if ($uploadMb): ?>
+			<li>Files larger than <?= $uploadMb; ?>MB will need to be uploaded via FTP client.</li>
 		<?php endif; ?>
 		<li>These files will be uploaded to a reports folder and can be linked to with linked graphics or in a release's description.</li>
 	</ul>
@@ -183,18 +191,18 @@
 								</a>
 							</td>
 							<td>
-								<?php echo $this->Form->input("Graphic.$k.image", array(
+								<?= $this->Form->input("Graphic.$k.image", [
 									'type' => 'file',
 									'label' => false,
 									'class' => 'validate[required] upload'
-								)); ?>
+								]); ?>
 							</td>
 						<?php elseif ($mode == 'edit'): ?>
 							<td>
-								<?php echo $this->Form->input("Graphic.$k.remove", array(
+								<?= $this->Form->input("Graphic.$k.remove", [
 									'type' => 'checkbox',
 									'label' => false
-								)); ?>
+								]); ?>
 							</td>
 							<td>
 								<?php
@@ -202,40 +210,40 @@
 									$img_url .= $this->request->data['Graphic'][$k]['dir'].'/';
 									$img_url .= $this->Graphic->thumbnail($this->request->data['Graphic'][$k]['image']);
 								?>
-								<img src="<?php echo $img_url; ?>" />
-								<?php foreach (array('id', 'dir', 'image') as $field): ?>
-									<?php echo $this->Form->input("Graphic.$k.$field", array(
+								<img src="<?= $img_url; ?>" />
+								<?php foreach (['id', 'dir', 'image'] as $field): ?>
+									<?= $this->Form->input("Graphic.$k.$field", [
 										'value' => $this->request->data['Graphic'][$k][$field],
 										'type' => 'hidden'
-									)); ?>
+									]); ?>
 								<?php endforeach; ?>
 							</td>
 						<?php endif; ?>
 						<td>
-							<?php echo $this->Form->input("Graphic.$k.title", array(
+							<?= $this->Form->input("Graphic.$k.title", [
 								'label' => false,
 								'class' => "validate[condRequired[Graphic{$k}Image]]"
-							)); ?>
+							]); ?>
 						</td>
 						<td>
-							<?php echo $this->Form->input("Graphic.$k.url", array(
+							<?= $this->Form->input("Graphic.$k.url", [
 								'label' => false,
 								'class' => "validate[condRequired[Graphic{$k}Image]]",
 								'after' =>  '<a href="#" title="Find report" class="find_report" id="find_report_button_'.$k.'"><img src="/data_center/img/icons/magnifier.png" alt="Find report" /></a>'
-							)); ?>
-							<?php $this->Js->buffer("
-								$('#find_report_button_$k').click(function(event) {
-									event.preventDefault();
-									toggleReportFinder(this, $k);
-								});
-							"); ?>
+							]); ?>
+                            <script>
+                                $('#find_report_button_<?= $k ?>').click(function(event) {
+                                    event.preventDefault();
+                                    toggleReportFinder(this, <?= $k ?>);
+                                });
+                            </script>
 						</td>
 						<td>
-							<?php echo $this->Form->input("Graphic.$k.weight", array(
+							<?= $this->Form->input("Graphic.$k.weight", [
 								'label' => false,
 								'type' => 'select',
 								'options' => range(1, count($this->request->data['Graphic']))
-							)); ?>
+							]); ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>
@@ -256,44 +264,44 @@
 					</a>
 				</td>
 				<td>
-					<?php echo $this->Form->input("Graphic.{i}.image", array(
+					<?= $this->Form->input("Graphic.{i}.image", [
 						'type' => 'file',
 						'label' => false,
 						'disabled' => true,
 						'required' => true,
 						'class' => 'validate[required,funcCall[checkExtension]] upload'
-					)); ?>
+					]); ?>
 				</td>
 				<td>
-					<?php echo $this->Form->input("Graphic.{i}.title", array(
+					<?= $this->Form->input("Graphic.{i}.title", [
 						'label' => false,
 						'disabled' => true,
 						'required' => true,
 						'class' => 'validate[condRequired[Graphic{i}Image]]'
-					)); ?>
+					]); ?>
 				</td>
 				<td>
-					<?php echo $this->Form->input("Graphic.{i}.url", array(
+					<?= $this->Form->input("Graphic.{i}.url", [
 						'label' => false,
 						'disabled' => true,
 						'required' => true,
 						'class' => 'validate[condRequired[Graphic{i}Image]',
 						'after' => ' <a href="#" title="Find report" class="find_report"><img src="/data_center/img/icons/magnifier.png" alt="Find report" /></a>'
-					)); ?>
+					]); ?>
 				</td>
 				<td>
 					<?php
 						if (isset($this->request->data['Graphic'])) {
 							$options = range(1, count($this->request->data['Graphic']) + 1);
 						} else {
-							$options = array(1);
+							$options = [1];
 						}
-						echo $this->Form->input("Graphic.{i}.weight", array(
+						echo $this->Form->input("Graphic.{i}.weight", [
 							'label' => false,
 							'disabled' => true,
 							'type' => 'select',
 							'options' => $options
-						));
+						]);
 					?>
 				</td>
 			</tr>
@@ -305,20 +313,20 @@
 	echo $this->element('DataCenter.jquery_ui');
 	echo $this->element(
 		'tags/editor',
-		array(
+		[
 			'available_tags' => $available_tags,
-			'selected_tags' => isset($this->request->data['Tag']) ? $this->request->data['Tag'] : array(),
+			'selected_tags' => isset($this->request->data['Tag']) ? $this->request->data['Tag'] : [],
 			'hide_label' => true,
 			'allow_custom' => true
-		),
-		array(
+		],
+		[
 			'plugin' => 'DataCenter'
-		)
+		]
 	);
 	echo $this->Form->end('Submit');
 	echo $this->element(
 		'DataCenter.rich_text_editor_init',
-		array(
+		[
 			'customConfig' => Configure::read('ckeditor_custom_config')
-		)
+		]
 	);
