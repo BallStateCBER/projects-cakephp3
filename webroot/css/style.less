@@ -494,9 +494,12 @@ table.commentaries {
 ul.tags {
     li {
         display: inline;
-        :after {
-            content: '\2022';
-        }
+    }
+    li:after {
+        color: #000000;
+        content: '\2022';
+        padding: 5px;
+        text-decoration: none;
     }
 }
 
