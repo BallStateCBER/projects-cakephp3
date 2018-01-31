@@ -21,9 +21,13 @@ class ReleasesController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Partners']
+            'contain' => ['Graphics', 'Partners'],
+            'limit' => 5
         ];
-        $releases = $this->paginate($this->Releases);
+        $releases = $this->paginate(
+            $this->Releases->find()
+            ->order(['released' => 'DESC'])
+        );
 
         $this->set(compact('releases'));
     }

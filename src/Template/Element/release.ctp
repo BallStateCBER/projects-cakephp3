@@ -53,9 +53,9 @@
 						<p class="authors">
 							<?= __n('Author', 'Authors', count($release['Author'])); ?>:
 							<?php
-								$author_links = [];
+								$authorLinks = [];
 								foreach ($release['Author'] as $author) {
-									$author_links[] = $this->Html->link(
+									$authorLinks[] = $this->Html->link(
 										$author['name'],
 										array(
 											'controller' => 'authors',
@@ -64,37 +64,37 @@
 										)
 									);
 								}
-								echo implode(', ', $author_links);
+								echo implode(', ', $authorLinks);
 							?>
 						</p>
 					<?php endif; ?>
 
 				</td>
-				<td class="graphics_col <?= (count($release['Graphic']) > 1) ? 'graphics_col_double' : 'graphics_col_single'; ?>">
+				<td class="graphics_col <?= (count($release->graphics) > 1) ? 'graphics_col_double' : 'graphics_col_single'; ?>">
 					<p class="date">
 						Published <?= date('F j, Y', strtotime($release->released)); ?>
 					</p>
 
-					<?php if (! empty($release['Graphic'])): ?>
+					<?php if (!empty($release->graphics)): ?>
 						<table>
 							<tr>
-								<?php foreach ($release['Graphic'] as $k => $graphic): ?>
-									<?php if ($k + 1 == count($release['Graphic']) && $k % 2 == 0): ?>
+								<?php foreach ($release->graphics as $k => $graphic): ?>
+									<?php if ($k + 1 == count($release->graphics) && $k % 2 == 0): ?>
 										<td>
 											&nbsp;
 										</td>
 									<?php endif; ?>
 									<td>
 										<?php
-											$img_src = '/img/releases/'.$graphic['dir'].'/'.$this->Graphic->thumbnail($graphic['image']);
+											$imgSrc = '/img/releases/'.$graphic['dir'].'/'.$this->Graphic->thumbnail($graphic['image']);
 											echo $this->Html->link(
-												"<div class=\"graphic\"><img src=\"$img_src\" /></div>{$graphic['title']}",
+												"<div class=\"graphic\"><img src=\"$imgSrc\" /></div>{$graphic['title']}",
 												$graphic['url'],
 												array('escape' => false)
 											);
 										?>
 									</td>
-									<?php if ($k % 2 == 1 && count($release['Graphic']) > $k + 1): ?>
+									<?php if ($k % 2 == 1 && count($release->graphics) > $k + 1): ?>
 										</tr>
 										<tr>
 									<?php endif; ?>

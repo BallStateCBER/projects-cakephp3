@@ -221,18 +221,19 @@ td.graphics_col {
 	}
 }
 .paging {
+    list-style-type: none;
 	text-align: right;
+    li {
+        display: inline;
+        margin: 0 5px;
 
-	span {
-		margin: 0 5px;
-
-		&:first-child {
-			margin-left: 0;
-		}
-		&:last-child {
-			margin-right: 0;
-		}
-	}
+        &:first-child {
+            margin-left: 0;
+        }
+        &:last-child {
+            margin-right: 0;
+        }
+    }
 }
 
 
