@@ -50,6 +50,10 @@ Router::scope('/', function (RouteBuilder $routes) {
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
     $routes->connect('/', ['controller' => 'Releases', 'action' => 'index']);
+    $routes->connect('/:page',
+        ['controller' => 'Releases', 'action' => 'index'],
+        ['page' => '[0-9]+', 'pass' => ['page']]
+    );
 
     Router::connect(
         '/partner/:id/:slug',

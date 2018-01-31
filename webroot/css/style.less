@@ -226,12 +226,20 @@ td.graphics_col {
     li {
         display: inline;
         margin: 0 5px;
-
         &:first-child {
             margin-left: 0;
         }
         &:last-child {
             margin-right: 0;
+        }
+    }
+    li.active {
+        a {
+            color: #000000;
+        }
+        a:hover {
+            cursor: text;
+            text-decoration: none;
         }
     }
 }
