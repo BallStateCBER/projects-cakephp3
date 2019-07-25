@@ -134,7 +134,7 @@ class AppController extends Controller
                 $this->response = $this->response->withExpiredCookie('CookieAuth');
             }
         }
-        
+
         $tags = $this->Tags->find()
             ->select(['id', 'name', 'slug'])
             ->contain(['Releases'])
