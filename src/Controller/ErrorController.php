@@ -30,7 +30,7 @@ class ErrorController extends AppController
      */
     public function initialize()
     {
-        $this->loadComponent('RequestHandler');
+        parent::initialize();
     }
 
     /**
@@ -65,5 +65,6 @@ class ErrorController extends AppController
      */
     public function afterFilter(Event $event)
     {
+        parent::afterFilter($event);
     }
 }
